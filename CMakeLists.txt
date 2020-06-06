@@ -38,4 +38,4 @@ set(CMAKE_CXX_COMPILE_FEATURES
     cxx_generalized_initializers
     )
 
-add_subdirectory(apps/chapter1)
+add_subdirectory(chapters/chapter1)
