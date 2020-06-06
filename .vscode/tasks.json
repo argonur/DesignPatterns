@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Release build",
+            "command": "bash",
+            "args": [
+                "-c",
+                "./cmake_build_executables_linux.sh"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
