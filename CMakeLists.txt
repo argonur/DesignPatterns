@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.14)
 
+project(HeadFirst_DesignPatters_C++)
+
 add_compile_options(
 	-Wall
     -Wextra
@@ -39,3 +41,4 @@ set(CMAKE_CXX_COMPILE_FEATURES
     )
 
 add_subdirectory(chapters/chapter1)
+add_subdirectory(chapters/chapter2)
