@@ -93,7 +93,7 @@ class CurrentConditionsDisplay : public Observer, public DisplayElement {
 
 int main(void)
 {
-    std::cout << "chapter 2" << std::endl;
+    std::cout << "chapter 2 - observer" << std::endl;
 
     WeatherData weatherData;
     CurrentConditionsDisplay currentDisplay(&weatherData);

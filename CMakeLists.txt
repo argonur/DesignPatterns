@@ -42,3 +42,4 @@ set(CMAKE_CXX_COMPILE_FEATURES
 
 add_subdirectory(chapters/chapter1)
 add_subdirectory(chapters/chapter2)
+add_subdirectory(chapters/chapter3)

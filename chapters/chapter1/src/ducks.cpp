@@ -176,6 +176,8 @@ class ModelDuck : public Duck {
 
 int main(void)
 {
+    std::cout << "chapter 1 - strategy" << std::endl;
+
     Duck* mallard = new MallardDuck();
     Duck* redHead = new RedHeadDuck();
     Duck* rubber = new RubberDuck();
