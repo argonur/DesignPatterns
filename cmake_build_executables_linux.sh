@@ -12,7 +12,7 @@ fi
 mkdir -p build/Release
 
 pushd ./build
-echo "Generate with cmake and build with ninja:"
+echo "Generate with cmake and build:"
 cmake \
 -B ./Release/ \
 -DPROJECT_ROOT:PATH=$(pwd)/.. \
