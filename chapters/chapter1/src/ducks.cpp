@@ -1,3 +1,11 @@
+/* *********************************************
+* This example implements the STRATEGY
+* design pattern, which defines a family of algorithms,
+* encapsulates each one, and makes them interchangable.
+* Strategy lets the algorithm vary independently from
+* clients that use it.
+********************************************* */
+
 #include <iostream>
 #include <list>
 

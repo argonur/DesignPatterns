@@ -1,3 +1,11 @@
+/* *********************************************
+* This example implements the OBSERVER
+* design pattern. The objective is to define
+* a one-to-many dependency between objects so that
+* when one object changes state, all its dependents
+* are notified and updated automatically.
+********************************************* */
+
 #include <iostream>
 #include <list>
 

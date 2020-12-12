@@ -1,3 +1,13 @@
+/* *********************************************
+* This example implements a SIMPLE FACTORY,
+* which isn't a design pattern according to the
+* book, but still worth learning.
+* The objective is to encapsulate the object creation
+* task in one class, so that there will only be one 
+* place to be modified when the implementation changes.
+* It also removes concrete instantiations from client code.
+********************************************* */
+
 #include <iostream>
 #include <string>
 #include <memory>

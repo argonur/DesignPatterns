@@ -1,3 +1,11 @@
+/* *********************************************
+* This example implements the DECORATOR
+* design pattern. The objective is to attach additional
+* responsabilities to an object dinamically.
+* Decorators provide a flexible alternative to subclassing
+* for extending functionality.
+********************************************* */
+
 #include <iostream>
 #include <string>
 
