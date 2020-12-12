@@ -36,8 +36,8 @@ class Pizza
     void prepare() const
     {
         std::cout << "Preparing " << getName() << std::endl;
-        std::cout << "Tossing dough..." << std::endl;
-        std::cout << "Adding sauce..." << std::endl;
+        std::cout << "Tossing dough: " << m_dough << std::endl;
+        std::cout << "Adding sauce: " << m_sauce << std::endl;
         std::cout << "Adding toppings:" << std::endl;
         for(auto topping : m_toppings)
         {
@@ -80,7 +80,7 @@ class CheesePizza : public Pizza
 class VeggiePizza : public Pizza
 {
     public:
-    VeggiePizza() : Pizza("Veggie Pizza", "dough", "sauce", {"Paprika", "Onion", "Olives", "Champignons"})
+    VeggiePizza() : Pizza("Veggie Pizza", "normal dough", "normal sauce", {"Paprika", "Onion", "Olives", "Champignons"})
     {
 
     }
