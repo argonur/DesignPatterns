@@ -1,1 +1,5 @@
-add_executable(chapter5 "src/chocolateBoiler.cpp")
+add_executable(chapter5_1 "src/chocolateBoiler1.cpp")
+add_executable(chapter5_2 "src/chocolateBoiler2.cpp")
+target_link_libraries(chapter5_2 pthread)
+add_executable(chapter5_3 "src/chocolateBoiler3.cpp")
+target_link_libraries(chapter5_3 pthread)
