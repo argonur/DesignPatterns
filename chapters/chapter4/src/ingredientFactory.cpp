@@ -142,48 +142,51 @@ class PizzaIngredientFactory
 
     virtual ~PizzaIngredientFactory() = default;
 
-    virtual std::shared_ptr<Dough> createDough() = 0;
-    virtual std::shared_ptr<Sauce> createSauce() = 0;
-    virtual std::shared_ptr<Cheese> createCheese() = 0;
-    virtual std::list<std::shared_ptr<Veggie>> createVeggies() = 0;
-    virtual std::shared_ptr<Pepperoni> createPepperoni() = 0;
-    virtual std::shared_ptr<Clams> createClams() = 0;
+    virtual std::unique_ptr<Dough> createDough() = 0;
+    virtual std::unique_ptr<Sauce> createSauce() = 0;
+    virtual std::unique_ptr<Cheese> createCheese() = 0;
+    virtual std::list<std::unique_ptr<Veggie>> createVeggies() = 0;
+    virtual std::unique_ptr<Pepperoni> createPepperoni() = 0;
+    virtual std::unique_ptr<Clams> createClams() = 0;
 };
 
 class NYPizzaIngredientFactory : public PizzaIngredientFactory
 {
     public:
 
-    std::shared_ptr<Dough> createDough() override
+    std::unique_ptr<Dough> createDough() override
     {
-        return std::make_shared<ThinCrustDough>();
+        return std::make_unique<ThinCrustDough>();
     }
     
-    std::shared_ptr<Sauce> createSauce() override
+    std::unique_ptr<Sauce> createSauce() override
     {
-        return std::make_shared<MarinaraSauce>();
+        return std::make_unique<MarinaraSauce>();
     }
 
-    std::shared_ptr<Cheese> createCheese() override
+    std::unique_ptr<Cheese> createCheese() override
     {
-        return std::make_shared<ReggianoCheese>();
+        return std::make_unique<ReggianoCheese>();
     }
     
-    std::list<std::shared_ptr<Veggie>> createVeggies() override
+    std::list<std::unique_ptr<Veggie>> createVeggies() override
     {
-        std::list<std::shared_ptr<Veggie>> veggies = {std::make_shared<Garlic>(), std::make_shared<Onion>(), 
-                                                      std::make_shared<Mushroom>(), std::make_shared<RedPepper>()};
+        std::list<std::unique_ptr<Veggie>> veggies;
+        veggies.emplace_back(std::make_unique<Garlic>());
+        veggies.emplace_back(std::make_unique<Onion>());
+        veggies.emplace_back(std::make_unique<Mushroom>());
+        veggies.emplace_back(std::make_unique<RedPepper>());
         return veggies;
     }
     
-    std::shared_ptr<Pepperoni> createPepperoni() override
+    std::unique_ptr<Pepperoni> createPepperoni() override
     {
-        return std::make_shared<SlicedPepperoni>();
+        return std::make_unique<SlicedPepperoni>();
     }
     
-    std::shared_ptr<Clams> createClams() override
+    std::unique_ptr<Clams> createClams() override
     {
-        return std::make_shared<FreshClams>();
+        return std::make_unique<FreshClams>();
     }
     
 };
@@ -192,36 +195,39 @@ class ChicagoPizzaIngredientFactory : public PizzaIngredientFactory
 {
     public:
 
-    std::shared_ptr<Dough> createDough() override
+    std::unique_ptr<Dough> createDough() override
     {
-        return std::make_shared<ThickCrustDough>();
+        return std::make_unique<ThickCrustDough>();
     }
     
-    std::shared_ptr<Sauce> createSauce() override
+    std::unique_ptr<Sauce> createSauce() override
     {
-        return std::make_shared<PlumTomatoSauce>();
+        return std::make_unique<PlumTomatoSauce>();
     }
 
-    std::shared_ptr<Cheese> createCheese() override
+    std::unique_ptr<Cheese> createCheese() override
     {
-        return std::make_shared<MozzarellaCheese>();
+        return std::make_unique<MozzarellaCheese>();
     }
     
-    std::list<std::shared_ptr<Veggie>> createVeggies() override
+    std::list<std::unique_ptr<Veggie>> createVeggies() override
     {
-        std::list<std::shared_ptr<Veggie>> veggies = {std::make_shared<EggPlant>(), std::make_shared<Spinach>(), 
-                                                      std::make_shared<BlackOlives>()};
+        std::list<std::unique_ptr<Veggie>> veggies;
+        veggies.emplace_back(std::make_unique<Garlic>());
+        veggies.emplace_back(std::make_unique<Onion>());
+        veggies.emplace_back(std::make_unique<Mushroom>());
+        veggies.emplace_back(std::make_unique<RedPepper>());
         return veggies;
     }
     
-    std::shared_ptr<Pepperoni> createPepperoni() override
+    std::unique_ptr<Pepperoni> createPepperoni() override
     {
-        return std::make_shared<SlicedPepperoni>();
+        return std::make_unique<SlicedPepperoni>();
     }
     
-    std::shared_ptr<Clams> createClams() override
+    std::unique_ptr<Clams> createClams() override
     {
-        return std::make_shared<FrozenClams>();
+        return std::make_unique<FrozenClams>();
     }
     
 };
@@ -234,12 +240,12 @@ class Pizza
 
     protected:
 
-    std::shared_ptr<Dough> m_dough = nullptr;
-    std::shared_ptr<Sauce> m_sauce = nullptr;
-    std::shared_ptr<Cheese> m_cheese = nullptr;
-    std::shared_ptr<Pepperoni> m_pepperoni = nullptr;
-    std::shared_ptr<Clams> m_clams = nullptr;
-    std::list<std::shared_ptr<Veggie>> m_veggies = {};
+    std::unique_ptr<Dough> m_dough = nullptr;
+    std::unique_ptr<Sauce> m_sauce = nullptr;
+    std::unique_ptr<Cheese> m_cheese = nullptr;
+    std::unique_ptr<Pepperoni> m_pepperoni = nullptr;
+    std::unique_ptr<Clams> m_clams = nullptr;
+    std::list<std::unique_ptr<Veggie>> m_veggies = {};
 
     public:
 
@@ -278,12 +284,12 @@ class CheesePizza : public Pizza
 {
     private:
     
-    std::shared_ptr<PizzaIngredientFactory> m_ingredientFactory;
+    std::unique_ptr<PizzaIngredientFactory> m_ingredientFactory;
 
     public:
 
-    CheesePizza(std::shared_ptr<PizzaIngredientFactory> ingredientFactory) :
-                m_ingredientFactory(ingredientFactory)
+    CheesePizza(std::unique_ptr<PizzaIngredientFactory> ingredientFactory) :
+                m_ingredientFactory(std::move(ingredientFactory))
     {
 
     }
@@ -302,12 +308,12 @@ class VeggiePizza : public Pizza
 {
     private:
     
-    std::shared_ptr<PizzaIngredientFactory> m_ingredientFactory;
+    std::unique_ptr<PizzaIngredientFactory> m_ingredientFactory;
 
     public:
 
-    VeggiePizza(std::shared_ptr<PizzaIngredientFactory> ingredientFactory) :
-                m_ingredientFactory(ingredientFactory)
+    VeggiePizza(std::unique_ptr<PizzaIngredientFactory> ingredientFactory) :
+                m_ingredientFactory(std::move(ingredientFactory))
     {
 
     }
@@ -327,12 +333,12 @@ class ClamPizza : public Pizza
 {
     private:
     
-    std::shared_ptr<PizzaIngredientFactory> m_ingredientFactory;
+    std::unique_ptr<PizzaIngredientFactory> m_ingredientFactory;
 
     public:
 
-    ClamPizza(std::shared_ptr<PizzaIngredientFactory> ingredientFactory) :
-                m_ingredientFactory(ingredientFactory)
+    ClamPizza(std::unique_ptr<PizzaIngredientFactory> ingredientFactory) :
+                m_ingredientFactory(std::move(ingredientFactory))
     {
 
     }
@@ -352,12 +358,12 @@ class PepperoniPizza : public Pizza
 {
     private:
     
-    std::shared_ptr<PizzaIngredientFactory> m_ingredientFactory;
+    std::unique_ptr<PizzaIngredientFactory> m_ingredientFactory;
 
     public:
 
-    PepperoniPizza(std::shared_ptr<PizzaIngredientFactory> ingredientFactory) :
-                m_ingredientFactory(ingredientFactory)
+    PepperoniPizza(std::unique_ptr<PizzaIngredientFactory> ingredientFactory) :
+                m_ingredientFactory(std::move(ingredientFactory))
     {
 
     }
@@ -377,15 +383,15 @@ class PizzaStore
 {
     protected:
 
-    virtual std::shared_ptr<Pizza> createPizza(std::string pizzaType) = 0;
+    virtual std::unique_ptr<Pizza> createPizza(std::string pizzaType) = 0;
 
     public:
 
     virtual ~PizzaStore() = default;
 
-    std::shared_ptr<Pizza> orderPizza(std::string pizzaType)
+    std::unique_ptr<Pizza> orderPizza(std::string pizzaType)
     {
-        std::shared_ptr<Pizza> pizza = createPizza(pizzaType);
+        std::unique_ptr<Pizza> pizza = createPizza(pizzaType);
 
         pizza->prepare();
         pizza->bake();
@@ -398,30 +404,30 @@ class PizzaStore
 
 class NYStylePizzaStore : public PizzaStore
 {
-    std::shared_ptr<Pizza> createPizza(std::string pizzaType) override
+    std::unique_ptr<Pizza> createPizza(std::string pizzaType) override
     {
-        std::shared_ptr<Pizza> pizza = nullptr;
+        std::unique_ptr<Pizza> pizza = nullptr;
 
-        std::shared_ptr<PizzaIngredientFactory> ingredientFactory = std::make_shared<NYPizzaIngredientFactory>();
+        std::unique_ptr<PizzaIngredientFactory> ingredientFactory = std::make_unique<NYPizzaIngredientFactory>();
 
         if(pizzaType == "cheese")
         {
-            pizza = std::make_shared<CheesePizza>(ingredientFactory);
+            pizza = std::make_unique<CheesePizza>(std::move(ingredientFactory));
             pizza->setName("New York Style Cheese Pizza");
         }
         else if(pizzaType == "veggie")
         {
-            pizza = std::make_shared<VeggiePizza>(ingredientFactory);
+            pizza = std::make_unique<VeggiePizza>(std::move(ingredientFactory));
             pizza->setName("New York Style Veggie Pizza");
         }
         else if(pizzaType == "clam")
         {
-            pizza = std::make_shared<ClamPizza>(ingredientFactory);
+            pizza = std::make_unique<ClamPizza>(std::move(ingredientFactory));
             pizza->setName("New York Style Clam Pizza"); 
         }
         else if(pizzaType == "pepperoni")
         {
-            pizza = std::make_shared<PepperoniPizza>(ingredientFactory);
+            pizza = std::make_unique<PepperoniPizza>(std::move(ingredientFactory));
             pizza->setName("New York Style Pepperoni Pizza");            
         }
         
@@ -431,30 +437,30 @@ class NYStylePizzaStore : public PizzaStore
 
 class ChicagoStylePizzaStore : public PizzaStore
 {
-    std::shared_ptr<Pizza> createPizza(std::string pizzaType) override
+    std::unique_ptr<Pizza> createPizza(std::string pizzaType) override
     {
-        std::shared_ptr<Pizza> pizza = nullptr;
+        std::unique_ptr<Pizza> pizza = nullptr;
 
-        std::shared_ptr<PizzaIngredientFactory> ingredientFactory = std::make_shared<ChicagoPizzaIngredientFactory>();
+        std::unique_ptr<PizzaIngredientFactory> ingredientFactory = std::make_unique<ChicagoPizzaIngredientFactory>();
 
         if(pizzaType == "cheese")
         {
-            pizza = std::make_shared<CheesePizza>(ingredientFactory);
+            pizza = std::make_unique<CheesePizza>(std::move(ingredientFactory));
             pizza->setName("Chicago Style Cheese Pizza");
         }
         else if(pizzaType == "veggie")
         {
-            pizza = std::make_shared<VeggiePizza>(ingredientFactory);
+            pizza = std::make_unique<VeggiePizza>(std::move(ingredientFactory));
             pizza->setName("Chicago Style Veggie Pizza");
         }
         else if(pizzaType == "clam")
         {
-            pizza = std::make_shared<ClamPizza>(ingredientFactory);
+            pizza = std::make_unique<ClamPizza>(std::move(ingredientFactory));
             pizza->setName("Chicago Style Clam Pizza"); 
         }
         else if(pizzaType == "pepperoni")
         {
-            pizza = std::make_shared<PepperoniPizza>(ingredientFactory);
+            pizza = std::make_unique<PepperoniPizza>(std::move(ingredientFactory));
             pizza->setName("Chicago Style Pepperoni Pizza");            
         }
         
@@ -464,7 +470,7 @@ class ChicagoStylePizzaStore : public PizzaStore
 
 int main(void)
 {
-    std::shared_ptr<PizzaStore> nyPizzaStore = std::make_shared<NYStylePizzaStore>();
+    std::unique_ptr<PizzaStore> nyPizzaStore = std::make_unique<NYStylePizzaStore>();
     nyPizzaStore->orderPizza("cheese");
     std::cout << std::endl;
     nyPizzaStore->orderPizza("veggie");
@@ -474,7 +480,7 @@ int main(void)
     nyPizzaStore->orderPizza("pepperoni");
     std::cout << std::endl;
 
-    std::shared_ptr<PizzaStore> chicagoPizzaStore = std::make_shared<ChicagoStylePizzaStore>();
+    std::unique_ptr<PizzaStore> chicagoPizzaStore = std::make_unique<ChicagoStylePizzaStore>();
     chicagoPizzaStore->orderPizza("cheese");
     std::cout << std::endl;
     chicagoPizzaStore->orderPizza("veggie");

@@ -131,15 +131,15 @@ class PizzaStore
 {
     protected:
 
-    virtual std::shared_ptr<Pizza> createPizza(std::string pizzaType) = 0;
+    virtual std::unique_ptr<Pizza> createPizza(std::string pizzaType) = 0;
 
     public:
 
     virtual ~PizzaStore() = default;
 
-    std::shared_ptr<Pizza> orderPizza(std::string pizzaType)
+    std::unique_ptr<Pizza> orderPizza(std::string pizzaType)
     {
-        std::shared_ptr<Pizza> pizza;
+        std::unique_ptr<Pizza> pizza;
 
         pizza = createPizza(pizzaType);
 
@@ -156,17 +156,17 @@ class NYStylePizzaStore : public PizzaStore
 {
     public:
 
-    std::shared_ptr<Pizza> createPizza(std::string pizzaType) override
+    std::unique_ptr<Pizza> createPizza(std::string pizzaType) override
     {
-        std::shared_ptr<Pizza> pizza = nullptr;
+        std::unique_ptr<Pizza> pizza = nullptr;
 
         if(pizzaType == "cheese")
         {
-            pizza = std::make_shared<NYStyleCheesePizza>();
+            pizza = std::make_unique<NYStyleCheesePizza>();
         }
         else if(pizzaType == "veggie")
         {
-            pizza = std::make_shared<NYStyleVeggiePizza>();
+            pizza = std::make_unique<NYStyleVeggiePizza>();
         }
         
         return pizza;
@@ -177,17 +177,17 @@ class ChicagoStylePizzaStore : public PizzaStore
 {
     public:
 
-    std::shared_ptr<Pizza> createPizza(std::string pizzaType) override
+    std::unique_ptr<Pizza> createPizza(std::string pizzaType) override
     {
-        std::shared_ptr<Pizza> pizza = nullptr;
+        std::unique_ptr<Pizza> pizza = nullptr;
 
         if(pizzaType == "cheese")
         {
-            pizza = std::make_shared<ChicagoStyleCheesePizza>();
+            pizza = std::make_unique<ChicagoStyleCheesePizza>();
         }
         else if(pizzaType == "veggie")
         {
-            pizza = std::make_shared<ChicagoStyleVeggiePizza>();
+            pizza = std::make_unique<ChicagoStyleVeggiePizza>();
         }
         
         return pizza;
@@ -196,13 +196,13 @@ class ChicagoStylePizzaStore : public PizzaStore
 
 int main(void)
 {
-    std::shared_ptr<PizzaStore> nyPizzaStore = std::make_shared<NYStylePizzaStore>();
+    std::unique_ptr<PizzaStore> nyPizzaStore = std::make_unique<NYStylePizzaStore>();
     nyPizzaStore->orderPizza("veggie");
     std::cout << std::endl;
     nyPizzaStore->orderPizza("cheese");
     std::cout << std::endl;
     
-    std::shared_ptr<PizzaStore> chicagoPizzaStore = std::make_shared<ChicagoStylePizzaStore>();
+    std::unique_ptr<PizzaStore> chicagoPizzaStore = std::make_unique<ChicagoStylePizzaStore>();
     chicagoPizzaStore->orderPizza("veggie");
     std::cout << std::endl;
     chicagoPizzaStore->orderPizza("cheese");

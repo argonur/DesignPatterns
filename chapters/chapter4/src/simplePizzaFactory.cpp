@@ -91,27 +91,27 @@ class SimplePizzaFactory
 {
     public:
 
-    std::shared_ptr<Pizza> createPizza(const std::string& pizzaType)
+    std::unique_ptr<Pizza> createPizza(const std::string& pizzaType)
     {
-        std::shared_ptr<Pizza> pizza = nullptr;
+        std::unique_ptr<Pizza> pizza = nullptr;
 
         if(pizzaType == "cheese")
         {
-            pizza = std::make_shared<CheesePizza>();
+            pizza = std::make_unique<CheesePizza>();
         }
         /*
         else if(pizzaType == "pepperoni")
         {
-            pizza = std::make_shared<PepperoniPizza>();
+            pizza = std::make_unique<PepperoniPizza>();
         }
         else if(pizzaType == "clam")
         {
-            pizza = std::make_shared<ClamPizza>();
+            pizza = std::make_unique<ClamPizza>();
         }
         */
         else if(pizzaType == "veggie")
         {
-            pizza = std::make_shared<VeggiePizza>();
+            pizza = std::make_unique<VeggiePizza>();
         }
 
         return pizza;
@@ -122,18 +122,18 @@ class SimplePizzaFactory
 class PizzaStore
 {
     private:
-    std::shared_ptr<SimplePizzaFactory> m_factory;
+    std::unique_ptr<SimplePizzaFactory> m_factory;
 
     public:
 
-    PizzaStore(std::shared_ptr<SimplePizzaFactory> factory) : m_factory(factory)
+    PizzaStore(std::unique_ptr<SimplePizzaFactory> factory) : m_factory(std::move(factory))
     {
 
     }
 
-    std::shared_ptr<Pizza> orderPizza(std::string pizzaType)
+    std::unique_ptr<Pizza> orderPizza(std::string pizzaType)
     {
-        std::shared_ptr<Pizza> pizza;
+        std::unique_ptr<Pizza> pizza;
 
         pizza = m_factory->createPizza(pizzaType);
 
@@ -149,8 +149,7 @@ class PizzaStore
 
 int main(void)
 {
-    std::shared_ptr<SimplePizzaFactory> factory = std::make_shared<SimplePizzaFactory>();
-    PizzaStore pizzaStore(factory);
+    PizzaStore pizzaStore(std::make_unique<SimplePizzaFactory>());
     
     pizzaStore.orderPizza("veggie");
     std::cout << std::endl;
