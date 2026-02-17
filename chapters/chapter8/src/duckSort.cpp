@@ -7,6 +7,7 @@
 #include <memory>
 #include <algorithm>
 #include <list>
+#include <array>
 
 class Duck
 {
@@ -43,30 +44,34 @@ std::ostream& operator<<(std::ostream& out, const Duck& duck)
     return out << std::string(duck);
 }
 
-static void display(std::array<std::shared_ptr<Duck>, 6> ducksArray)
+// Versión con unique_ptr - recibimos por referencia para no consumir los unique_ptr
+static void display(const std::array<std::unique_ptr<Duck>, 6>& ducksArray)
 {
-    for (uint i = 0; i < ducksArray.size(); i++)
+    for (size_t i = 0; i < ducksArray.size(); i++)
     {
-        std::cout << *ducksArray[i] << std::endl;
+        if (ducksArray[i]) {  // Verificamos que no sea nullptr
+            std::cout << *ducksArray[i] << std::endl;
+        }
     }
 }
 
 int main()
 {
-    std::shared_ptr<Duck> a = std::make_shared<Duck>("Daffy", 8);
-    std::shared_ptr<Duck> b = std::make_shared<Duck>("Dewey", 2);
-    std::shared_ptr<Duck> c = std::make_shared<Duck>("Howard", 7);
-    std::shared_ptr<Duck> d = std::make_shared<Duck>("Louis", 2);
-    std::shared_ptr<Duck> e = std::make_shared<Duck>("Donald", 10);
-    std::shared_ptr<Duck> f = std::make_shared<Duck>("Huey", 2);
-
-    std::array<std::shared_ptr<Duck>, 6> ducks{a, b, c, d, e, f};
+    // Creamos los unique_ptr directamente
+    std::array<std::unique_ptr<Duck>, 6> ducks = {
+        std::make_unique<Duck>("Daffy", 8),
+        std::make_unique<Duck>("Dewey", 2),
+        std::make_unique<Duck>("Howard", 7),
+        std::make_unique<Duck>("Louis", 2),
+        std::make_unique<Duck>("Donald", 10),
+        std::make_unique<Duck>("Huey", 2)
+    };
 
     std::cout << "Before sorting array: " << std::endl;
     display(ducks);
 
     //using a lambda expression
-    std::sort(ducks.begin(), ducks.end(), [](std::shared_ptr<Duck> left, std::shared_ptr<Duck> right){
+    std::sort(ducks.begin(), ducks.end(), [](const std::unique_ptr<Duck>& left, const std::unique_ptr<Duck>& right){
       return left->getWeight() < right->getWeight(); 
     });
 
@@ -74,11 +79,10 @@ int main()
     std::cout << "After sorting array: " << std::endl;
     display(ducks);
 
-    std::list<Duck> duckList {*a, *b, *c, *d, *e, *f};
-
+    std::list<Duck> duckList {*ducks[0], *ducks[1], *ducks[2], *ducks[3], *ducks[4], *ducks[5]};
 
     auto print = [&] () {
-        for (Duck i : duckList)
+        for (const Duck& i : duckList)
             std::cout << i << std::endl;
     };
 

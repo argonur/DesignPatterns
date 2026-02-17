@@ -25,7 +25,7 @@ class ChocolateBoiler
 
     bool m_empty;
     bool m_boiled;
-    std::shared_ptr<std::mutex> m_businessLogicResourcesMutex = std::make_shared<std::mutex>();
+    std::unique_ptr<std::mutex> m_businessLogicResourcesMutex = std::make_unique<std::mutex>();
 
     // make constructor inaccessible through new
     ChocolateBoiler() : m_empty(true), m_boiled(false)

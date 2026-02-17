@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 #include <list>
+#include <array>
 
 class Light
 {
@@ -356,59 +357,57 @@ class MacroCommand : public Command
 class RemoteControl
 {
     private:
-
-    static constexpr uint numberOfSlots = 7;
-    std::shared_ptr<Command> m_onCommands[numberOfSlots] = {nullptr};
-    std::shared_ptr<Command> m_offCommands[numberOfSlots] = {nullptr};
-    std::shared_ptr<Command> m_undoCommand = nullptr;
+        static constexpr uint numberOfSlots = 7;
+        std::array<std::shared_ptr<Command>, numberOfSlots> m_onCommands;
+        std::array<std::shared_ptr<Command>, numberOfSlots> m_offCommands;
+        std::shared_ptr<Command> m_undoCommand;
 
     public:
-
-    RemoteControl()
-    {
-        std::shared_ptr<Command> noCommand = std::make_shared<NoCommand>();
-        for(uint i = 0; i < numberOfSlots; i++)
+        RemoteControl()
         {
-            m_onCommands[i] = noCommand;
-            m_offCommands[i] = noCommand;
+            auto noCommand = std::make_shared<NoCommand>();
+            for(size_t i = 0; i < numberOfSlots; i++)
+            {
+                m_onCommands[i] = noCommand;
+                m_offCommands[i] = noCommand;
+            }
+            m_undoCommand = noCommand;
         }
-        m_undoCommand = noCommand;
-    }
 
-    void setCommand(uint slot, std::shared_ptr<Command> onCommand, std::shared_ptr<Command> offCommand)
-    {
-        if(slot < 7)
+        void setCommand(uint slot, std::shared_ptr<Command> onCommand, std::shared_ptr<Command> offCommand)
         {
-            m_onCommands[slot] = onCommand;
-            m_offCommands[slot] = offCommand;
+            if(slot < numberOfSlots)
+            {
+                m_onCommands[slot] = onCommand;
+                m_offCommands[slot] = offCommand;
+            }
         }
-        else
+
+        void onButtonWasPushed(uint slot)
         {
-            std::cout << "Use slots from 0 to 6" << std::endl;
+            if(slot < numberOfSlots) {
+                m_onCommands[slot]->execute();
+                m_undoCommand = m_onCommands[slot];  // Ahora sí se puede compartir
+            }
         }
-    }
 
-    void onButtonWasPushed(uint slot)
-    {
-        m_onCommands[slot]->execute();
-        m_undoCommand = m_onCommands[slot];
-    }
+        void offButtonWasPushed(uint slot)
+        {
+            if(slot < numberOfSlots) {
+                m_offCommands[slot]->execute();
+                m_undoCommand = m_offCommands[slot];  // Ahora sí se puede compartir
+            }
+        }
 
-    void offButtonWasPushed(uint slot)
-    {
-        m_offCommands[slot]->execute();
-        m_undoCommand = m_offCommands[slot];
-    }
-
-    void undoButtonWasPushed()
-    {
-        m_undoCommand->undo();
-    }
+        void undoButtonWasPushed()
+        {
+            m_undoCommand->undo();
+        }
 };
 
 int main()
 {
-    std::unique_ptr<RemoteControl> remoteControl = std::make_unique<RemoteControl>();
+    RemoteControl remoteControl;
 
     std::shared_ptr<Light> livingRoomLight = std::make_shared<Light>("LivingRoom");
     std::shared_ptr<Light> kitchenLight = std::make_shared<Light>("Kitchen");
@@ -427,11 +426,11 @@ int main()
     std::shared_ptr<SecurityControlArmCommand> securityControlArm = std::make_shared<SecurityControlArmCommand>(securityControl);
     std::shared_ptr<SecurityControlDisarmCommand> securityControlDisarm = std::make_shared<SecurityControlDisarmCommand>(securityControl);
 
-    remoteControl->setCommand(0, livingRoomLightOn, livingRoomLightOff);
-    remoteControl->setCommand(1, kitchenLightOn, kitchenLightOff);
-    remoteControl->setCommand(2, stereoOn, stereoOff);
-    remoteControl->setCommand(3, sprinklerOn, sprinklerOff);
-    remoteControl->setCommand(4, securityControlArm, securityControlDisarm);
+    remoteControl.setCommand(0, livingRoomLightOn, livingRoomLightOff);
+    remoteControl.setCommand(1, kitchenLightOn, kitchenLightOff);
+    remoteControl.setCommand(2, stereoOn, stereoOff);
+    remoteControl.setCommand(3, sprinklerOn, sprinklerOff);
+    remoteControl.setCommand(4, securityControlArm, securityControlDisarm);
 
     std::list<std::shared_ptr<Command>> partyOn = {livingRoomLightOn, kitchenLightOn, stereoOn, sprinklerOn, securityControlArm};
     std::shared_ptr<MacroCommand> partyOnMacro = std::make_shared<MacroCommand>(partyOn);
@@ -439,39 +438,39 @@ int main()
     std::list<std::shared_ptr<Command>> partyOff = {livingRoomLightOff, kitchenLightOff, stereoOff, sprinklerOff, securityControlDisarm};
     std::shared_ptr<MacroCommand> partyOffMacro = std::make_shared<MacroCommand>(partyOff);
 
-    remoteControl->setCommand(5, partyOnMacro, partyOffMacro);
+    remoteControl.setCommand(5, partyOnMacro, partyOffMacro);
 
     // Smulation
-    remoteControl->undoButtonWasPushed();
+    remoteControl.undoButtonWasPushed();
 
-    remoteControl->onButtonWasPushed(0);
-    remoteControl->offButtonWasPushed(0);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.onButtonWasPushed(0);
+    remoteControl.offButtonWasPushed(0);
+    remoteControl.undoButtonWasPushed();
 
-    remoteControl->onButtonWasPushed(1);
-    remoteControl->offButtonWasPushed(1);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.onButtonWasPushed(1);
+    remoteControl.offButtonWasPushed(1);
+    remoteControl.undoButtonWasPushed();
 
-    remoteControl->onButtonWasPushed(2);
-    remoteControl->offButtonWasPushed(2);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.onButtonWasPushed(2);
+    remoteControl.offButtonWasPushed(2);
+    remoteControl.undoButtonWasPushed();
 
-    remoteControl->onButtonWasPushed(3);
-    remoteControl->offButtonWasPushed(3);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.onButtonWasPushed(3);
+    remoteControl.offButtonWasPushed(3);
+    remoteControl.undoButtonWasPushed();
 
-    remoteControl->onButtonWasPushed(4);
-    remoteControl->offButtonWasPushed(4);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.onButtonWasPushed(4);
+    remoteControl.offButtonWasPushed(4);
+    remoteControl.undoButtonWasPushed();
 
     // Party
-    remoteControl->offButtonWasPushed(5);
-    remoteControl->onButtonWasPushed(5);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.offButtonWasPushed(5);
+    remoteControl.onButtonWasPushed(5);
+    remoteControl.undoButtonWasPushed();
     std::cout << "----------------------------" << std::endl;
 
     // Not assigned slot
-    remoteControl->onButtonWasPushed(6);
-    remoteControl->offButtonWasPushed(6);
-    remoteControl->undoButtonWasPushed();
+    remoteControl.onButtonWasPushed(6);
+    remoteControl.offButtonWasPushed(6);
+    remoteControl.undoButtonWasPushed();
 }
